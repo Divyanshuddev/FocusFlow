@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --bg-primary: #f4f5f6;
+    --bg-secondary: #ffffff;
+    --text-primary: #101114;
+    --text-secondary: #5c606b;
+    --border-subtle: rgba(16, 17, 20, 0.09);
+  }
+
+  .dark {
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --text-primary: #ffffff;
+    --text-secondary: #8b8e96;
+    --border-subtle: rgba(255, 255, 255, 0.08);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply rounded-[26px] border border-slate-200/90 bg-white shadow-sm dark:border-white/[0.09] dark:bg-[#0A0A0A] dark:bg-gradient-to-b dark:from-[#111111] dark:via-[#090909] dark:to-[#050505] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_38px_-18px_rgba(0,0,0,0.85)];
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-200 hover:border-[#48BC2B]/50 hover:shadow-md dark:hover:border-[#48BC2B]/40 dark:hover:from-[#161616] dark:hover:to-[#0A0A0A];
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition focus:border-[#48BC2B] focus:outline-none focus:ring-2 focus:ring-[#48BC2B]/25 dark:border-white/[0.1] dark:bg-[#111111] dark:text-white dark:placeholder:text-[#6C7078] dark:focus:border-[#48BC2B];
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[#48BC2B] px-4 py-2.5 text-sm font-semibold text-black shadow-[0_0_20px_-4px_rgba(72,188,43,0.55),inset_0_1px_0_rgba(255,255,255,0.3)] transition hover:bg-[#54CA37] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-white/[0.1] dark:bg-[#141414] dark:text-slate-200 dark:hover:bg-[#1E1E1E] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .micro-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-[#8B8E96];
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 142, 150, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 142, 150, 0.45);
+}

@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: focusflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-focusflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-focusflow}
+      POSTGRES_DB: ${POSTGRES_DB:-focusflow}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-focusflow} -d ${POSTGRES_DB:-focusflow}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: focusflow-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_NAME: FocusFlow API
+      ENVIRONMENT: development
+      DEBUG: "true"
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-focusflow}:${POSTGRES_PASSWORD:-focusflow}@postgres:5432/${POSTGRES_DB:-focusflow}
+      SECRET_KEY: ${SECRET_KEY:-replace-with-secure-random-secret-key}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    container_name: focusflow-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_APP_NAME: FocusFlow
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:
