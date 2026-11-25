@@ -95,6 +95,15 @@ api.interceptors.response.use(
 
 export function extractApiError(error: unknown, fallback = "Something went wrong"): string {
   if (axios.isAxiosError(error)) {
+    if (
+      !error.response &&
+      API_BASE_URL.includes("localhost") &&
+      typeof window !== "undefined" &&
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1"
+    ) {
+      return "Frontend API URL is not configured (NEXT_PUBLIC_API_URL is still pointing to localhost). Set NEXT_PUBLIC_API_URL in Vercel and trigger a fresh Redeploy without build cache.";
+    }
     const detail = error.response?.data?.detail;
     if (typeof detail === "string") return detail;
     if (Array.isArray(detail) && detail[0]?.msg) return String(detail[0].msg);
